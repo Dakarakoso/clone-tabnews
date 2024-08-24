@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "next dev",
     "lint:check": "prettier --check .",
-    "lint:fix": "prettier --write ."
+    "lint:fix": "prettier --write .",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
-  "author": "",
+  "author": "Willian Maruyama",
   "license": "MIT",
   "dependencies": {
     "next": "^13.1.6",
