@@ -40,12 +40,4 @@ function Home() {
   );
 }
 
-function test() {
-  console.log("teste");
-}
-
-function test2() {
-  console.log("teste2");
-}
-
 export default Home;
