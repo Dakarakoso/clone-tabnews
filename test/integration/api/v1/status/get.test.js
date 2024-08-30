@@ -15,7 +15,6 @@ test("GET to /api/v1/status should return 200", async () => {
   expect(typeof dbMaxConnections).toBe("number");
   const dbOpenedConnections =
     responseBody.dependencies.database.opened_connections;
-  expect(dbOpenedConnections).toBeDefined();
   expect(dbOpenedConnections).not.toBeNull();
-  expect(typeof dbOpenedConnections).toBe("number");
+  expect(dbOpenedConnections).toEqual(1);
 });
