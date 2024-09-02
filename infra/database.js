@@ -32,7 +32,7 @@ function getSslValue() {
       ca: process.env.POSTGRES_CA,
     };
   }
-  return process.env.NODE_ENV === "development" ? false : false;
+  return process.env.NODE_ENV === "development" ? false : true;
 }
 
 export default {
