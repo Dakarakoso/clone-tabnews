@@ -8,12 +8,6 @@ async function query(ObjectQuery) {
     database: process.env.POSTGRES_DB,
     ssl: getSslValue(),
   });
-  console.log("credentials: ", {
-    host: process.env.POSTGRES_HOST,
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DB,
-  });
   try {
     await client.connect();
     const result = await client.query(ObjectQuery);
@@ -32,7 +26,7 @@ function getSslValue() {
       ca: process.env.POSTGRES_CA,
     };
   }
-  return process.env.NODE_ENV === "development" ? false : true;
+  return process.env.NODE_ENV === "production" ? true : false;
 }
 
 export default {
