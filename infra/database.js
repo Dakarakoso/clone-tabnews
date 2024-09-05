@@ -1,15 +1,9 @@
 import { Client } from "pg";
 
 async function query(ObjectQuery) {
-  const client = new Client({
-    host: process.env.POSTGRES_HOST,
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DB,
-    ssl: getSslValue(),
-  });
+  let client;
   try {
-    await client.connect();
+    client = await getNewClient();
     const result = await client.query(ObjectQuery);
     return result;
   } catch (err) {
@@ -29,6 +23,19 @@ function getSslValue() {
   return process.env.NODE_ENV === "production" ? true : false;
 }
 
+async function getNewClient() {
+  const client = new Client({
+    host: process.env.POSTGRES_HOST,
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DB,
+    ssl: getSslValue(),
+  });
+  await client.connect();
+  return client;
+}
+
 export default {
-  query: query,
+  query,
+  getNewClient,
 };
