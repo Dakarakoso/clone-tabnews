@@ -1,3 +1,5 @@
+import Script from "next/script";
+
 function Home() {
   return (
     <main
@@ -17,10 +19,10 @@ function Home() {
       </h1>
       <span stye={{ color: "#970DC9" }}>Eu e voçê para sempre💗💗</span>
 
-      <script
+      <Script
         src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs"
         type="module"
-      ></script>
+      ></Script>
 
       <dotlottie-player
         src="https://lottie.host/4f2452f5-89ec-458d-866e-3da5f42465d6/cIQgoO65cD.json"
