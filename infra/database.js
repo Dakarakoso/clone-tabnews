@@ -34,8 +34,9 @@ async function getNewClient() {
   await client.connect();
   return client;
 }
-
-export default {
+const database = {
   query,
   getNewClient,
 };
+
+export default database;
