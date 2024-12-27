@@ -1,83 +1,60 @@
 import useSWR from "swr";
-import { useState, useEffect } from "react";
 
-async function fetchAPI(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error();
-  }
-  return response.json();
+async function fetchAPI(key) {
+  const response = await fetch(key);
+  const responseBody = await response.json();
+  return responseBody;
 }
 
 export default function StatusPage() {
-  const { data, error, isLoading } = useSWR("/api/v1/status", fetchAPI, {
+  return (
+    <>
+      <h1>Status</h1>
+      <UpdatedAt />
+      <DatabaseStatus />
+    </>
+  );
+}
+
+function UpdatedAt() {
+  const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
     refreshInterval: 2000,
   });
 
-  if (isLoading) return <div>Loading status...</div>;
-  if (error) return <div>Error loading status: {error.message}</div>;
+  let updatedAtText = "Carregando...";
 
-  return (
-    <div>
-      <h1>Status</h1>
-      <UpdatedAt updatedAt={data?.updated_at} />
-      <Dependencies dependencies={data?.dependencies} />
-    </div>
-  );
+  if (!isLoading && data) {
+    updatedAtText = new Date(data.updated_at).toLocaleString("pt-BR");
+  }
+
+  return <div>Última atualização: {updatedAtText}</div>;
 }
 
-function UpdatedAt({ updatedAt }) {
-  const [currentTime, setCurrentTime] = useState(new Date());
+function DatabaseStatus() {
+  const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
+    refreshInterval: 2000,
+  });
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
+  let databaseStatusInformation = "Carregando...";
 
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const updatedAtDate = updatedAt ? new Date(updatedAt) : null;
-
-  const updatedAtText = updatedAtDate
-    ? updatedAtDate.toLocaleDateString("pt-BR", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      })
-    : "Unavailable";
-
-  return (
-    <div>
-      <strong>Last Updated:</strong> {updatedAtText}
-    </div>
-  );
-}
-
-function Dependencies({ dependencies }) {
-  const dbInfo = dependencies?.database;
-
-  if (!dbInfo) {
-    return <div>No dependency information available.</div>;
+  if (!isLoading && data) {
+    databaseStatusInformation = (
+      <>
+        <div>Versão: {data.dependencies.database.version}</div>
+        <div>
+          Conexões abertas: {data.dependencies.database.opened_connections}
+        </div>
+        <div>
+          Conexões máximas: {data.dependencies.database.max_connections}
+        </div>
+      </>
+    );
   }
 
   return (
-    <div>
-      <h2>Database Info</h2>
-      <ul>
-        <li>
-          <strong>Version:</strong> {dbInfo.version}
-        </li>
-        <li>
-          <strong>Max Connections:</strong> {dbInfo.max_connections}
-        </li>
-        <li>
-          <strong>Opened Connections:</strong> {dbInfo.opened_connections}
-        </li>
-      </ul>
-    </div>
+    <>
+      <h2>Database</h2>
+      <div>{databaseStatusInformation}</div>
+    </>
   );
 }
