@@ -70,7 +70,7 @@ describe("POST /api/v1/users", () => {
         name: "ValidationError",
         message: "duplicated email",
         action: "use a different email",
-        status_code: 400,
+        statusCode: 400,
       });
     });
     test("With duplicated username", async () => {
@@ -105,7 +105,7 @@ describe("POST /api/v1/users", () => {
         name: "ValidationError",
         message: "duplicated username",
         action: "use a different username",
-        status_code: 400,
+        statusCode: 400,
       });
     });
   });
