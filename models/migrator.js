@@ -7,7 +7,6 @@ const defaultMigrationOptions = {
   dir: resolve("infra", "migrations"),
   direction: "up",
   log: () => {},
-  verbose: true,
   migrationsTableName: "pgmigrations",
 };
 
