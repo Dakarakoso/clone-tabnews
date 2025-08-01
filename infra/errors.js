@@ -13,7 +13,7 @@ export class InternalServerError extends Error {
       name: this.name,
       message: this.message,
       action: this.action,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -33,11 +33,46 @@ export class ServiceError extends Error {
       name: this.name,
       message: this.message,
       action: this.action,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
+    };
+  }
+}
+export class ValidationError extends Error {
+  constructor({ cause, message, action }) {
+    super(message || "Valition error ocurred", {
+      cause,
+    });
+    this.name = "ValidationError";
+    this.action = action || "validate the sent data";
+    this.statusCode = 400;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      statusCode: this.statusCode,
     };
   }
 }
 
+export class NotFoundError extends Error {
+  constructor({ cause, message, action }) {
+    super(message || "Not Found Error", { cause });
+    this.name = "NotFoundError";
+    this.action = action || "Check the sent data an try it again";
+    this.statusCode = 404;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      statusCode: this.statusCode,
+    };
+  }
+}
 export class MethodNotAllowedError extends Error {
   constructor() {
     super("Method not allowed to this endpoint.");
@@ -51,7 +86,7 @@ export class MethodNotAllowedError extends Error {
       name: this.name,
       message: this.message,
       action: this.action,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
