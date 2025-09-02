@@ -22,7 +22,6 @@ async function getHandler(req, res) {
     values: [dbName],
   });
   const openedConnections = openedConnectionsQuery.rows[0].count;
-  console.log(openedConnections);
 
   res.status(200).json({
     updated_at: updatedAt,
