@@ -1,7 +1,6 @@
 import { createRouter } from "next-connect";
 import controller from "infra/controller.js";
 import user from "models/user.js";
-import * as cookie from "cookie";
 import session from "models/session.js";
 
 const router = createRouter();
