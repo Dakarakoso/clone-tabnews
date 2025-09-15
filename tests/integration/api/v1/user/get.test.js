@@ -85,6 +85,19 @@ describe("GET /api/v1/user", () => {
         action: "Check your session or login again",
         statusCode: 401,
       });
+
+      // Set-Cookie assertions
+      const parsedSetCookie = setCookieParser(response, {
+        map: true,
+      });
+
+      expect(parsedSetCookie.session_id).toEqual({
+        name: "session_id",
+        value: "invalid",
+        maxAge: -1,
+        path: "/",
+        httpOnly: true,
+      });
     });
 
     test("With expired session", async () => {
@@ -111,6 +124,18 @@ describe("GET /api/v1/user", () => {
         message: "user doesn't have valid session",
         action: "Check your session or login again",
         statusCode: 401,
+      });
+      // Set-Cookie assertions
+      const parsedSetCookie = setCookieParser(response, {
+        map: true,
+      });
+
+      expect(parsedSetCookie.session_id).toEqual({
+        name: "session_id",
+        value: "invalid",
+        maxAge: -1,
+        path: "/",
+        httpOnly: true,
       });
     });
     test("With halfway session", async () => {

@@ -14,13 +14,19 @@ function onNoMatchHandler(request, response) {
 }
 
 function onErrorHandler(error, request, response) {
-  if (
-    error instanceof ValidationError ||
-    error instanceof NotFoundError ||
-    error instanceof UnauthorizedError
-  ) {
+  if (error instanceof ValidationError || error instanceof NotFoundError) {
     return response.status(error.statusCode).json(error);
   }
+
+  if (error instanceof UnauthorizedError) {
+    // always force the unauthorized response to delete the session_id cookie in the browser.
+    // This will avoid scenarios where the browser might still have a "valid" session_id cookie
+    // stored in it while the backend session is already invalid, causing the backend state
+    // to be "out of sync" with the browser state for the session.
+    clearSessionCookie(response);
+    return response.status(error.statusCode).json(error);
+  }
+
   const publicErrorObj = new InternalServerError({
     cause: error,
   });
