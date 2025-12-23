@@ -1,11 +1,13 @@
 import * as cookie from "cookie";
 import session from "models/session.js";
+import user from "models/user.js";
 import {
   InternalServerError,
   MethodNotAllowedError,
   NotFoundError,
   UnauthorizedError,
   ValidationError,
+  ForbiddenError,
 } from "infra/errors";
 
 function onNoMatchHandler(request, response) {
@@ -14,15 +16,15 @@ function onNoMatchHandler(request, response) {
 }
 
 function onErrorHandler(error, request, response) {
-  if (error instanceof ValidationError || error instanceof NotFoundError) {
+  if (
+    error instanceof ValidationError ||
+    error instanceof NotFoundError ||
+    error instanceof ForbiddenError
+  ) {
     return response.status(error.statusCode).json(error);
   }
 
   if (error instanceof UnauthorizedError) {
-    // always force the unauthorized response to delete the session_id cookie in the browser.
-    // This will avoid scenarios where the browser might still have a "valid" session_id cookie
-    // stored in it while the backend session is already invalid, causing the backend state
-    // to be "out of sync" with the browser state for the session.
     clearSessionCookie(response);
     return response.status(error.statusCode).json(error);
   }
@@ -54,6 +56,49 @@ async function clearSessionCookie(response) {
   response.setHeader("Set-Cookie", setCookie);
 }
 
+async function injectAnonymousOrUser(request, response, next) {
+  //if `session_id` exists, inject user
+  if (request.cookie?.session_id) {
+    await injectAuthenticatedUser(request);
+    return next();
+  }
+  await injectAnonymousUser(request);
+  return next();
+  //other inject anonymous user
+}
+
+async function injectAuthenticatedUser(request) {
+  const sessionToken = request.cookies.session_id;
+  const sessionObject = await session.findOneValidByToken(sessionToken);
+  const userObject = await user.findOneById(sessionObject.user_id);
+  request.context = {
+    ...request.context,
+    user: userObject,
+  };
+}
+async function injectAnonymousUser(request) {
+  const anonymousUserObject = {
+    features: ["read:activation_token", "create:session", "create:user"],
+  };
+  request.context = {
+    ...request.context,
+    user: anonymousUserObject,
+  };
+}
+
+function canRequest(feature) {
+  return function canRequestMiddleware(request, response, next) {
+    const userTryingToRequest = request.context.user;
+    if (userTryingToRequest.features.includes(feature)) {
+      return next();
+    }
+    throw new ForbiddenError({
+      message: "You do not have permission to perform this action.",
+      action: `Please contact support if you believe this is an error. Or check if you the ${feature} permission`,
+    });
+  };
+}
+
 const controller = {
   errorHandlers: {
     onNoMatch: onNoMatchHandler,
@@ -61,6 +106,8 @@ const controller = {
   },
   setSessionCookie,
   clearSessionCookie,
+  injectAnonymousOrUser,
+  canRequest,
 };
 
 export default controller;

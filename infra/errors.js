@@ -107,3 +107,20 @@ export class MethodNotAllowedError extends Error {
     };
   }
 }
+
+export class ForbiddenError extends Error {
+  constructor({ cause, message, action }) {
+    super(message || "Forbidden Error", { cause });
+    this.name = "ForbiddenError";
+    this.action = action || "Check the needed features permissions";
+    this.statusCode = 403;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      statusCode: this.statusCode,
+    };
+  }
+}
