@@ -59,7 +59,7 @@ async function clearSessionCookie(response) {
 
 async function injectAnonymousOrUser(request, response, next) {
   //if `session_id` exists, inject user
-  if (request.cookie?.session_id) {
+  if (request.cookies?.session_id) {
     await injectAuthenticatedUser(request);
     return next();
   }
