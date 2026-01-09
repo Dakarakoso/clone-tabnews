@@ -125,4 +125,36 @@ describe("POST /api/v1/users", () => {
       });
     });
   });
+  describe("Default user", () => {
+    test("with unique and valid data", async () => {
+      const createdUser1 = await orchestrator.createUser();
+      await orchestrator.activateUser(createdUser1);
+      const sessionObject = await orchestrator.createSession(createdUser1.id);
+
+      const user2Response = await fetch("http://localhost:3000/api/v1/users", {
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `session_id=${sessionObject.token}`,
+        },
+        method: "POST",
+        body: JSON.stringify({
+          username: "loggedUser",
+          email: "loggedUser@email.com",
+          password: "pass1234",
+        }),
+      });
+
+      expect(user2Response.status).toBe(403);
+
+      const responseBody = await user2Response.json();
+
+      expect(responseBody).toEqual({
+        name: "ForbiddenError",
+        message: "You do not have permission to perform this action.",
+        action:
+          "Please contact support if you believe this is an error. Or check if you the create:user permission",
+        statusCode: 403,
+      });
+    });
+  });
 });
