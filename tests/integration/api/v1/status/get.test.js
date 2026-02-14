@@ -12,13 +12,32 @@ describe("GET /api/v1/status", () => {
       const responseBody = await response.json();
       const parsedUpdatedAt = new Date(responseBody.updated_at).toISOString();
       expect(responseBody.updated_at).toEqual(parsedUpdatedAt);
-      const dbVersion = responseBody.dependencies.database.version;
-      expect(typeof dbVersion).toBe("string");
-      expect(dbVersion).toBe("16.0");
       expect(typeof responseBody.dependencies.database.max_connections).toBe(
         "number",
       );
       expect(responseBody.dependencies.database.max_connections).toBe(100);
+    });
+  });
+  describe("Previleged user", () => {
+    test("Retrieving current system status", async () => {
+      const createUser = await orchestrator.createUser();
+      const activateUser = await orchestrator.activateUser(createUser);
+      await orchestrator.addFeaturesToUser(createUser, ["read:status:all"]);
+      const sessionObject = await orchestrator.createSession(activateUser.id);
+      const response = await fetch("http://localhost:3000/api/v1/status", {
+        headers: {
+          Cookie: `session_id=${sessionObject.token}`,
+        },
+      });
+      expect(response.status).toBe(200);
+      const responseBody = await response.json();
+      const parsedUpdatedAt = new Date(responseBody.updated_at).toISOString();
+      expect(responseBody.updated_at).toEqual(parsedUpdatedAt);
+      expect(typeof responseBody.dependencies.database.max_connections).toBe(
+        "number",
+      );
+      expect(responseBody.dependencies.database.max_connections).toBe(100);
+      expect(responseBody.dependencies.database.version).toBe("16.0");
     });
   });
 });
