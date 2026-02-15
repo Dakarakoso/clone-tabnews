@@ -1,4 +1,32 @@
+import { InternalServerError } from "infra/errors.js";
+
+const availableFeatures = [
+  //USER
+  "create:user",
+  "read:user",
+  "read:user:self",
+  "update:user",
+  "update:user:others",
+
+  // SESSION
+  "create:session",
+  "read:session",
+
+  // ACTIVATION TOKEN
+  "read:activation_token",
+
+  // MIGRATION
+  "read:migration",
+  "create:migration",
+
+  // STATUS
+  "read:status",
+  "read:status:all",
+];
+
 function can(user, feature, resource) {
+  validateUser(user);
+  validateUserFeature(feature);
   let authorized = false;
   if (user.features.includes(feature)) {
     authorized = true;
@@ -14,6 +42,9 @@ function can(user, feature, resource) {
 }
 
 function filterOutput(user, feature, resource) {
+  validateUser(user);
+  validateUserFeature(feature);
+  validateResource(resource);
   if (feature === "read:user") {
     return {
       id: resource.id,
@@ -79,6 +110,29 @@ function filterOutput(user, feature, resource) {
         expires_at: resource.expires_at,
       };
     }
+  }
+}
+
+function validateUser(user) {
+  if (!user || !user.features) {
+    throw new InternalServerError({
+      cause: "E necessario fornecer user no model authorization",
+    });
+  }
+}
+
+function validateUserFeature(feature) {
+  if (!feature || !availableFeatures.includes(feature)) {
+    throw new InternalServerError({
+      cause: `E necessario fornecer uma feature valida no model authorization. Features disponiveis: ${availableFeatures.join(", ")}`,
+    });
+  }
+}
+function validateResource(resource) {
+  if (!resource) {
+    throw new InternalServerError({
+      cause: "E necessario fornecer resource no model authorization",
+    });
   }
 }
 
