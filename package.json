@@ -63,6 +63,9 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
+  "engines": {
+    "node": "24"
+  },
   "lint-staged": {
     "*": [
       "secretlint"
