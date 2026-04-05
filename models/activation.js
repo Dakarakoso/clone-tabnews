@@ -84,7 +84,7 @@ async function create(userId) {
 
 async function sendEmailToUser(user, activationToken) {
   await email.send({
-    from: "Support <contato@fintab.com.br>",
+    from: "Support <contato@maruyama-work.com.br>",
     to: user.email,
     subject: "Activate your account",
     text: `${user.username} please activate your account by clicking the link: 
