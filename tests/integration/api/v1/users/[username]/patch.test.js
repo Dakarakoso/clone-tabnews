@@ -240,6 +240,9 @@ describe("PACTH /api/v1/users/[username]", () => {
         updated_at: responseBody.updated_at,
       });
 
+      const userInDB = await user.findOneByUsername(uniqueEmail.username);
+      expect(userInDB.email).toBe("uniqueEmail2@curso.dev");
+
       expect(uuidVersion(responseBody.id)).toBe(4);
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
