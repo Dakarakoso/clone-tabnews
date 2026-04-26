@@ -40,5 +40,5 @@ async function getHandler(req, res) {
     "read:status",
     unsecureOutputValues,
   );
-  res.status(200).json(secureOutputValues);
+  return res.status(200).json(secureOutputValues);
 }
