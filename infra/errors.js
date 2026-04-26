@@ -19,13 +19,14 @@ export class InternalServerError extends Error {
 }
 
 export class ServiceError extends Error {
-  constructor({ cause, message }) {
+  constructor({ cause, message, action, context }) {
     super(message || "Service unavailable", {
       cause,
     });
     this.name = "ServiceError";
-    this.action = "contact support";
+    this.action = action || "contact support";
     this.statusCode = 503;
+    this.context = context;
   }
 
   toJSON() {
@@ -34,6 +35,7 @@ export class ServiceError extends Error {
       message: this.message,
       action: this.action,
       statusCode: this.statusCode,
+      context: this.context,
     };
   }
 }
@@ -98,6 +100,23 @@ export class MethodNotAllowedError extends Error {
     this.statusCode = 405;
   }
 
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      statusCode: this.statusCode,
+    };
+  }
+}
+
+export class ForbiddenError extends Error {
+  constructor({ cause, message, action }) {
+    super(message || "Forbidden Error", { cause });
+    this.name = "ForbiddenError";
+    this.action = action || "Check the needed features permissions";
+    this.statusCode = 403;
+  }
   toJSON() {
     return {
       name: this.name,
