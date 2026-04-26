@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 describe("PACTH /api/v1/users/[username]", () => {
   describe("Anonymous user", () => {
-    test("With unique username", async () => {
+    test("With unique `username`", async () => {
       const uniqueUser = await orchestrator.createUser({
         username: "uniqueUser1",
       });
@@ -43,7 +43,7 @@ describe("PACTH /api/v1/users/[username]", () => {
     });
   });
   describe("Default user", () => {
-    test("With  nonexistent 'username'", async () => {
+    test("With  nonexistent `username`", async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
       const sessionObj = await orchestrator.createSession(activatedUser.id);
@@ -66,7 +66,7 @@ describe("PACTH /api/v1/users/[username]", () => {
         statusCode: 404,
       });
     });
-    test("With duplicated username", async () => {
+    test("With duplicated `username`", async () => {
       await orchestrator.createUser({
         username: "user1",
       });
@@ -136,7 +136,7 @@ describe("PACTH /api/v1/users/[username]", () => {
         statusCode: 403,
       });
     });
-    test("With duplicated email", async () => {
+    test("With duplicated `email`", async () => {
       await orchestrator.createUser({
         email: "duplicatedEmail1@curso.dev",
       });
@@ -172,7 +172,7 @@ describe("PACTH /api/v1/users/[username]", () => {
         statusCode: 400,
       });
     });
-    test("With unique username", async () => {
+    test("With unique `username`", async () => {
       const uniqueUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(uniqueUser);
       const sessionObj = await orchestrator.createSession(activatedUser.id);
@@ -209,7 +209,7 @@ describe("PACTH /api/v1/users/[username]", () => {
 
       expect(responseBody.updated_at > responseBody.created_at).toBe(true);
     });
-    test("With unique email", async () => {
+    test("With unique `email`", async () => {
       const uniqueEmail = await orchestrator.createUser({
         email: "uniqueEmail@curso.dev",
       });
@@ -248,7 +248,7 @@ describe("PACTH /api/v1/users/[username]", () => {
 
       expect(responseBody.updated_at > responseBody.created_at).toBe(true);
     });
-    test("With new password", async () => {
+    test("With new `password`", async () => {
       const userWithNewPassword = await orchestrator.createUser({
         password: "password",
       });
