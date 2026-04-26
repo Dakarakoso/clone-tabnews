@@ -2,6 +2,7 @@ import orchestrator from "tests/orchestrator.js";
 import { version as uuidVersion } from "uuid";
 import user from "models/user.js";
 import password from "models/password.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -17,7 +18,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       });
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${uniqueUser.username}`,
+        `${webserver.origin}/api/v1/users/${uniqueUser.username}`,
         {
           method: "PATCH",
           headers: {
@@ -48,7 +49,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       const activatedUser = await orchestrator.activateUser(createdUser);
       const sessionObj = await orchestrator.createSession(activatedUser.id);
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/nonexistent",
+        `${webserver.origin}/api/v1/users/nonexistent`,
         {
           method: "PATCH",
           headers: {
@@ -77,7 +78,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       const activatedUser2 = await orchestrator.activateUser(createdUser2);
       const sessionObj2 = await orchestrator.createSession(activatedUser2.id);
 
-      const response = await fetch("http://localhost:3000/api/v1/users/user2", {
+      const response = await fetch(`${webserver.origin}/api/v1/users/user2`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -110,19 +111,16 @@ describe("PACTH /api/v1/users/[username]", () => {
       const activatedUser2 = await orchestrator.activateUser(createdUser2);
       const sessionObj2 = await orchestrator.createSession(activatedUser2.id);
 
-      const response = await fetch(
-        "http://localhost:3000/api/v1/users/user11",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Cookie: `session_id=${sessionObj2.token}`,
-          },
-          body: JSON.stringify({
-            username: "user3q",
-          }),
+      const response = await fetch(`${webserver.origin}/api/v1/users/user11`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `session_id=${sessionObj2.token}`,
         },
-      );
+        body: JSON.stringify({
+          username: "user3q",
+        }),
+      });
 
       expect(response.status).toBe(403);
 
@@ -148,7 +146,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       const sessionObj2 = await orchestrator.createSession(activatedUser2.id);
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${createdUser2.username}`,
+        `${webserver.origin}/api/v1/users/${createdUser2.username}`,
         {
           method: "PATCH",
           headers: {
@@ -178,7 +176,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       const sessionObj = await orchestrator.createSession(activatedUser.id);
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${uniqueUser.username}`,
+        `${webserver.origin}/api/v1/users/${uniqueUser.username}`,
         {
           method: "PATCH",
           headers: {
@@ -217,7 +215,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       const sessionObj = await orchestrator.createSession(activatedUser.id);
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${uniqueEmail.username}`,
+        `${webserver.origin}/api/v1/users/${uniqueEmail.username}`,
         {
           method: "PATCH",
           headers: {
@@ -257,7 +255,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       const sessionObj = await orchestrator.createSession(activatedUser.id);
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${userWithNewPassword.username}`,
+        `${webserver.origin}/api/v1/users/${userWithNewPassword.username}`,
         {
           method: "PATCH",
           headers: {
@@ -318,7 +316,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       );
       const defaultUser = await orchestrator.createUser();
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${defaultUser.username}`,
+        `${webserver.origin}/api/v1/users/${defaultUser.username}`,
         {
           method: "PATCH",
           headers: {
