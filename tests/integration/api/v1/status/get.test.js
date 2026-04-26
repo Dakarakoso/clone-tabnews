@@ -24,7 +24,7 @@ describe("GET /api/v1/status", () => {
       const createUser = await orchestrator.createUser();
       const activateUser = await orchestrator.activateUser(createUser);
       await orchestrator.addFeaturesToUser(createUser, ["read:status:all"]);
-      const sessionObject = await orchestrator.createSession(activateUser.id);
+      const sessionObject = await orchestrator.createSession(activateUser);
       const response = await fetch(`${webserver.origin}/api/v1/status`, {
         headers: {
           Cookie: `session_id=${sessionObject.token}`,

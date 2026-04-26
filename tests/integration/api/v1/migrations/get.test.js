@@ -26,7 +26,7 @@ describe("GET /api/v1/migrations", () => {
     test("Retrieving pending migrations", async () => {
       const createUser = await orchestrator.createUser();
       const activateUser = await orchestrator.activateUser(createUser);
-      const sessionObject = await orchestrator.createSession(activateUser.id);
+      const sessionObject = await orchestrator.createSession(activateUser);
       const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         headers: {
           Cookie: `session_id=${sessionObject.token}`,
@@ -48,7 +48,7 @@ describe("GET /api/v1/migrations", () => {
       const createUser = await orchestrator.createUser();
       const activateUser = await orchestrator.activateUser(createUser);
       await orchestrator.addFeaturesToUser(createUser, ["read:migration"]);
-      const sessionObject = await orchestrator.createSession(activateUser.id);
+      const sessionObject = await orchestrator.createSession(activateUser);
       const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         headers: {
           Cookie: `session_id=${sessionObject.token}`,

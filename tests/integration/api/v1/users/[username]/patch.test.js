@@ -47,7 +47,7 @@ describe("PACTH /api/v1/users/[username]", () => {
     test("With  nonexistent `username`", async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
-      const sessionObj = await orchestrator.createSession(activatedUser.id);
+      const sessionObj = await orchestrator.createSession(activatedUser);
       const response = await fetch(
         `${webserver.origin}/api/v1/users/nonexistent`,
         {
@@ -76,7 +76,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       });
 
       const activatedUser2 = await orchestrator.activateUser(createdUser2);
-      const sessionObj2 = await orchestrator.createSession(activatedUser2.id);
+      const sessionObj2 = await orchestrator.createSession(activatedUser2);
 
       const response = await fetch(`${webserver.origin}/api/v1/users/user2`, {
         method: "PATCH",
@@ -109,7 +109,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       });
 
       const activatedUser2 = await orchestrator.activateUser(createdUser2);
-      const sessionObj2 = await orchestrator.createSession(activatedUser2.id);
+      const sessionObj2 = await orchestrator.createSession(activatedUser2);
 
       const response = await fetch(`${webserver.origin}/api/v1/users/user11`, {
         method: "PATCH",
@@ -143,7 +143,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       });
 
       const activatedUser2 = await orchestrator.activateUser(createdUser2);
-      const sessionObj2 = await orchestrator.createSession(activatedUser2.id);
+      const sessionObj2 = await orchestrator.createSession(activatedUser2);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${createdUser2.username}`,
@@ -173,7 +173,7 @@ describe("PACTH /api/v1/users/[username]", () => {
     test("With unique `username`", async () => {
       const uniqueUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(uniqueUser);
-      const sessionObj = await orchestrator.createSession(activatedUser.id);
+      const sessionObj = await orchestrator.createSession(activatedUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${uniqueUser.username}`,
@@ -212,7 +212,7 @@ describe("PACTH /api/v1/users/[username]", () => {
         email: "uniqueEmail@curso.dev",
       });
       const activatedUser = await orchestrator.activateUser(uniqueEmail);
-      const sessionObj = await orchestrator.createSession(activatedUser.id);
+      const sessionObj = await orchestrator.createSession(activatedUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${uniqueEmail.username}`,
@@ -255,7 +255,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       });
       const activatedUser =
         await orchestrator.activateUser(userWithNewPassword);
-      const sessionObj = await orchestrator.createSession(activatedUser.id);
+      const sessionObj = await orchestrator.createSession(activatedUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${userWithNewPassword.username}`,
@@ -315,7 +315,7 @@ describe("PACTH /api/v1/users/[username]", () => {
       ]);
 
       const privelegedUserSession = await orchestrator.createSession(
-        activatedPrivilegedUser.id,
+        activatedPrivilegedUser,
       );
       const defaultUser = await orchestrator.createUser();
       const response = await fetch(

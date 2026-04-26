@@ -149,9 +149,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
     test("with valid token, but already logged in", async () => {
       const createdUser1 = await orchestrator.createUser();
       await orchestrator.activateUser(createdUser1);
-      const user1SessionObject = await orchestrator.createSession(
-        createdUser1.id,
-      );
+      const user1SessionObject = await orchestrator.createSession(createdUser1);
 
       const createdUser2 = await orchestrator.createUser();
       const user2ActivationToken = await activation.create(createdUser2.id);
